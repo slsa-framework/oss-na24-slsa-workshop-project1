@@ -30,8 +30,6 @@ env:
   REGISTRY_USERNAME: laurentsimon
 
 jobs:
-  # NOTE: for containers that we want external teams to run, we may release independently _before_ we deploy ourselves.
-  # This just means seperating the release and deploy jobs in seperate workflows.
   release:
     permissions:
       id-token: write # for creating OIDC tokens for signing.
