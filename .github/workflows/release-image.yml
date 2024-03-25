@@ -37,8 +37,8 @@ jobs:
     uses: laurentsimon/oss-na24-slsa-workshop-organization/.github/workflows/image-releaser.yml@main
     with:
       environment: ${{ inputs.environment }}
-      image: ${{ needs.build.outputs.image }}
-      digest: ${{ needs.build.outputs.digest }}
+      image: ${{ inputs.image }}
+      digest: ${{ inputs.digest }}
       # Use name rather than env variable because env are not available for reusable workflows.
       registry-username: laurentsimon
       #registry-username: ${{ github.actor }}
