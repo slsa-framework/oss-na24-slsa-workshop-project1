@@ -1,0 +1,50 @@
+name: Release image
+
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: "The OCI image name. This must not include a tag or digest."
+        type: string
+        default: "docker.io/laurentsimon/slsa-project-echo-server"
+      digest:
+        description: "The OCI image digest. The image digest of the form '<algorithm>:<digest>' (e.g. 'sha256:abcdef...')"
+        type: string
+        default: "sha256:bf4992d5bb89de77779de32f919f72a1592581ce356209784b79667f8a18aae0"
+      environment:
+        type: choice
+        description: Environment to use
+        options: 
+        - prod
+        - staging
+
+permissions: read-all
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  IMAGE_REGISTRY: docker.io
+  IMAGE_NAME: ${{ github.repository }}-echo-server
+  REGISTRY_USERNAME: laurentsimon
+
+jobs:
+  # NOTE: for containers that we want external teams to run, we may release independently _before_ we deploy ourselves.
+  # This just means seperating the release and deploy jobs in seperate workflows.
+  release:
+    permissions:
+      id-token: write # for creating OIDC tokens for signing.
+      packages: write # for uploading attestations.
+      contents: read # To read the repo.
+    uses: laurentsimon/oss-na24-slsa-workshop-organization/.github/workflows/image-releaser.yml@main
+    with:
+      environment: ${{ inputs.environment }}
+      image: ${{ needs.build.outputs.image }}
+      digest: ${{ needs.build.outputs.digest }}
+      # Use name rather than env variable because env are not available for reusable workflows.
+      registry-username: laurentsimon
+      #registry-username: ${{ github.actor }}
+    secrets:
+      registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+      #registry-password: ${{ secrets.GITHUB_TOKEN }}
