@@ -31,7 +31,6 @@ defaults:
 env:
   IMAGE_REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}-echo-server
-  REGISTRY_USERNAME: laurentsimon
 
 jobs:
   deploy:
