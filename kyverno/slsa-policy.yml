@@ -1,0 +1,84 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: slsa-policy
+spec:
+  validationFailureAction: Enforce
+  webhookTimeoutSeconds: 30
+  rules:
+    - name: slsa-policy
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      context:
+        - name: slsa-configuration
+          configMap:
+            name: slsa-configuration
+            namespace: default
+
+      verifyImages:
+        - imageReferences:
+            - "*"
+          attestations:
+            - type: "https://slsa.dev/deployment/v0.1"
+              attestors:
+              - entries:
+                - keyless:
+                    subject: "https://github.com/laurentsimon/oss-na24-slsa-workshop-organization/.github/workflows/image-deployer.yml@refs/heads/main"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: "https://rekor.sigstore.dev"
+              # TODO: subject verified cofirmation
+              # map of scope
+              # conditions:
+              #   - all:
+              #     - key: "{{ deployResult }}"
+              #       operator: Equals
+              #       value: "ALLOW"
+              #       message: "expected ALLOW, got {{ deployResult }}"
+                    
+                  # # Verify the image name in the attestation's provenance.
+                  # # TODO: Patch kyverno to be able to reference the subject name.
+                  # # To figure out the request info, enable --dumpPayload=true and --v=6 for kyverno-admission-controller at install. 
+                  # - key: "{{ subject[0].name }}"
+                  #   operator: Equals
+                  #   value: "{{ image.registry }}/{{ image.path }}"
+                  #   message: "expected {{ image.registry }}/{{ image.path }}, got {{ subject[0].name }}"
+
+                  # # NOTE: image digest is verified by Kyverno.
+
+                  # # Verify the policy uri.
+                  # - key: "{{ policy.uri }}"
+                  #   operator: Equals
+                  #   value: "{{ configuration.data.policy_uri }}"
+                  #   message: "expected {{ configuration.data.policy_uri }}, got {{ policy.uri }}"
+
+                  # # Verify policy version if present.
+                  # - key: "{{ policy.version }}"
+                  #   operator: Equals
+                  #   value: "{{ configuration.data.policy_version }}"
+                  #   message: "expected {{ configuration.data.policy_version }}, got {{ policy.version }}"
+
+                  # # Verify policy ref.
+                  # - key: "{{ policy.ref }}"
+                  #   operator: Equals
+                  #   value: "{{ configuration.data.policy_ref }}"
+                  #   message: "expected {{ configuration.data.policy_ref }}, got {{ policy.ref }}"
+
+                  # # TODO: verify time
+                  # # https://kyverno.io/blog/2023/02/19/new-time-related-jmespath-filters-in-kyverno/
+                  # # https://main.kyverno.io/docs/writing-policies/jmespath/
+
+                  # # Verify verifier id in attestation.
+                  # - key: "{{ verifier.id }}"
+                  #   operator: Equals
+                  #   value: "{{ configuration.data.verifier_id }}"
+                  #   message: "expected {{ configuration.data.verifier_id }}, got {{ verifier.id }}"
+
+                  # # verify verifier ref in attestation.
+                  # - key: "{{ verifier.ref }}"
+                  #   operator: Equals
+                  #   value: "{{ configuration.data.verifier_ref }}"
+                  #   message: "expected {{ configuration.data.verifier_ref }}, got {{ verifier.ref }}"
