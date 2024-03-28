@@ -1,0 +1,45 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: slsa-policy
+spec:
+  validationFailureAction: Enforce
+  webhookTimeoutSeconds: 30
+  rules:
+    - name: slsa-policy
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      context:
+        - name: slsa-configuration
+          configMap:
+            name: slsa-configuration
+            namespace: default
+
+      verifyImages:
+        - imageReferences:
+            - "*"
+          attestations:
+            - type: "https://slsa.dev/deployment/v0.1"
+              attestors:
+              - entries:
+                - keyless:
+                    ## Verify the identity of the evaluator who generated the delpoyment attestation.
+                    subject: '{{ "slsa-configuration".data."attestation_creator" }}'
+                    issuer: '{{ "slsa-configuration".data."sigstore_issuer" }}'
+                    rekor:
+                      url: '{{ "slsa-configuration".data."sigstore_rekor_url" }}'
+              
+              conditions:
+                - all:
+                  # Verify the scopes.
+                  - key: '{{ scopes."cloud.google.com/service_account/v1" }}'
+                    operator: Equals
+                    value: '{{ request.object.metadata.annotations."cloud.google.com.v1/service_account" }}'
+                    message: 'expected {{ request.object.metadata.annotations."cloud.google.com.v1/service_account" }}, got {{ scopes."cloud.google.com/service_account/v1" }}'
+
+                  # TODO: verify time
+                  # https://kyverno.io/blog/2023/02/19/new-time-related-jmespath-filters-in-kyverno/
+                  # https://main.kyverno.io/docs/writing-policies/jmespath/

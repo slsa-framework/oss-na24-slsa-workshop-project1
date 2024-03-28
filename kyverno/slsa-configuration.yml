@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  # NOTE: This is a generic name that is unique across the cluster.
+  # This value MUST not be changed, as it's used by the ClusterPolicy implementation.
+  name: slsa-configuration
+  namespace: default
+data:
+  # The format version of this configuraiton file.
+  format: "v1"
+
+  # Verifier information, i.e., the identify of the entity that created the deploy attestation.
+  # `sigstore_issuer`:   (Mandatory)  The Sigstore issuer.
+  # `sigstore_rekor_url`:(Mandatory)  The Sigstore's rekor URL.
+  #
+  attestation_creator: "https://github.com/laurentsimon/oss-na24-slsa-workshop-organization/.github/workflows/image-deployer.yml@refs/heads/main"
+  sigstore_issuer: "https://token.actions.githubusercontent.com"
+  sigstore_rekor_url: "https://rekor.sigstore.dev"
