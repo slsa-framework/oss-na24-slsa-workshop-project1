@@ -34,11 +34,18 @@ spec:
               
               conditions:
                 - all:
-                  # Verify the scopes.
+                  # Verify the scope value is set and matches.
                   - key: '{{ scopes."cloud.google.com/service_account/v1" }}'
                     operator: Equals
                     value: '{{ request.object.metadata.annotations."cloud.google.com/service_account" }}'
                     message: 'expected {{ request.object.metadata.annotations."cloud.google.com/service_account" }}, got {{ scopes."cloud.google.com/service_account/v1" }}'
+
+                  # Verify there is a single scope set (required and autheoritative for).
+                  - key: "{{ request.object.metadata.annotations | length(@) }}"
+                    operator: Equals
+                    value: 1
+                    message: 'expected a single scope. Got {{ request.object.metadata.annotations | length(@) }}'
+
 
                   # TODO: verify time
                   # https://kyverno.io/blog/2023/02/19/new-time-related-jmespath-filters-in-kyverno/
