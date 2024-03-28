@@ -15,7 +15,7 @@ spec:
         app: echo-server
       annotations:
         # WARNING: This simulates the service account being exposed via an annotation.
-        cloud.google.com.v1/service_account: "name@prod-project-id.iam.gserviceaccount.com"
+        cloud.google.com/service_account: "name@prod-project-id.iam.gserviceaccount.com"
     spec:
       containers:
       - name: echo-server
