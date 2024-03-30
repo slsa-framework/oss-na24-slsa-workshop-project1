@@ -34,13 +34,13 @@ spec:
               
               conditions:
                 - all:
-                  # Verify the scope value is set and matches.
+                  # Verify the scope value is set and matches the service account of the pod.
                   - key: '{{ scopes."cloud.google.com/service_account/v1" }}'
                     operator: Equals
                     value: '{{ request.object.metadata.annotations."cloud.google.com/service_account" }}'
                     message: 'expected {{ request.object.metadata.annotations."cloud.google.com/service_account" }}, got {{ scopes."cloud.google.com/service_account/v1" }}'
 
-                  # Verify there is a single scope set (required and autheoritative for).
+                  # Verify there is a single scope set (required and authoritative for).
                   - key: "{{ request.object.metadata.annotations | length(@) }}"
                     operator: Equals
                     value: 1
