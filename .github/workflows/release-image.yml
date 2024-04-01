@@ -29,12 +29,12 @@ env:
   IMAGE_NAME: ${{ github.repository }}-echo-server
 
 jobs:
-  release:
+  publish:
     permissions:
       id-token: write # for creating OIDC tokens for signing.
       packages: write # for uploading attestations.
       contents: read # To read the repo.
-    uses: laurentsimon/oss-na24-slsa-workshop-organization/.github/workflows/image-releaser.yml@main
+    uses: laurentsimon/oss-na24-slsa-workshop-organization/.github/workflows/image-publisher.yml@main
     with:
       environment: ${{ inputs.environment }}
       image: ${{ inputs.image }}
