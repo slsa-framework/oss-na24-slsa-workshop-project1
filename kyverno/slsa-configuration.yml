@@ -13,6 +13,6 @@ data:
   # `sigstore_issuer`:   (Mandatory)  The Sigstore issuer.
   # `sigstore_rekor_url`:(Mandatory)  The Sigstore's rekor URL.
   #
-  attestation_creator: "https://github.com/laurentsimon/oss-na24-slsa-workshop-organization/.github/workflows/image-deployer.yml@refs/heads/main"
+  attestation_creator: "https://github.com/slsa-framework/oss-na24-slsa-workshop-organization/.github/workflows/image-deployer.yml@refs/heads/main"
   sigstore_issuer: "https://token.actions.githubusercontent.com"
   sigstore_rekor_url: "https://rekor.sigstore.dev"

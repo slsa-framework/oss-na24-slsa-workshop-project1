@@ -38,7 +38,7 @@ jobs:
       id-token: write # for creating OIDC tokens for signing.
       packages: write # for uploading attestations.
       contents: read # To read the repo.
-    uses: laurentsimon/oss-na24-slsa-workshop-organization/.github/workflows/image-deployer.yml@main
+    uses: slsa-framework/oss-na24-slsa-workshop-organization/.github/workflows/image-deployer.yml@main
     with:
       policy-id: ${{ inputs.policy-id }}
       image: ${{ inputs.image }}
