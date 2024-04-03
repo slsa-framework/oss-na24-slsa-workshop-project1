@@ -58,7 +58,7 @@ jobs:
       - name: Output image
         id: image
         run: |
-          image_name="${IMAGE_REGISTRY}/${IMAGE_NAME}"
+          image_name="${IMAGE_REGISTRY}/${REGISTRY_USERNAME}/${IMAGE_NAME}"
           echo "image=$image_name" >> "$GITHUB_OUTPUT"
 
   provenance:
